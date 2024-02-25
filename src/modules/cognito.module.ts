@@ -6,14 +6,14 @@ import { redisCacheConfig } from '../config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     CacheModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
         redisCacheConfig(configService),
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
     }),
   ],
   providers: [...CognitoModuleProviders],
