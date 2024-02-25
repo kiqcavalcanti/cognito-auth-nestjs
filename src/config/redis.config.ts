@@ -7,10 +7,10 @@ export const redisCacheConfig = async (
   return {
     store: await redisStore({
       socket: {
-        host: configService.get('REDIS_HOST'),
-        port: configService.get('REDIS_PORT'),
+        host: configService.get('REDIS_COGNITO_HOST'),
+        port: configService.get('REDIS_COGNITO_PORT'),
       },
-      password: configService.get('REDIS_PASSWORD'),
+      password: configService.get('REDIS_COGNITO_PASSWORD'),
     }),
   };
 };
