@@ -5,35 +5,29 @@ import {
   HttpStatus,
   ExecutionContext,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../decorators';
+import { Scope } from '../decorators';
 import { TokenInfoOutput } from 'node-cognito-core-sdk';
-
 @Injectable()
-export class HasCognitoRoleGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    protected configService: ConfigService,
-  ) {}
+export class HasCognitoScopeGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     const user = context.switchToHttp().getRequest()[
       'comercAuth'
     ] as TokenInfoOutput;
 
-    const role =
-      this.reflector.get(Role, context.getHandler()) ??
-      this.configService.get('AWS_COGNITO_ROLE');
+    const scope = this.reflector.get(Scope, context.getHandler());
 
-    if (!role) {
+    if (!scope) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
-    const hasRole =
-      user.groups.filter((userRole) => userRole === role).length > 0;
+    const hasScope =
+      user.scope.split(' ').filter((userScope) => userScope === scope).length >
+      0;
 
-    if (!hasRole) {
+    if (!hasScope) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 

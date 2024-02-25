@@ -1,10 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { CognitoProviders } from '../providers';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CognitoModuleProviders } from '../providers';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisCacheConfig } from '../config';
 
 @Module({
-  imports: [ConfigModule.forRoot()],
-  providers: [...CognitoProviders],
-  exports: [...CognitoProviders],
+  imports: [
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        redisCacheConfig(configService),
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
+  providers: [...CognitoModuleProviders],
+  exports: [...CognitoModuleProviders],
 })
 export class CognitoModule {}

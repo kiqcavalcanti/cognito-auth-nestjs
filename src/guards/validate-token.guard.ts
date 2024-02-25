@@ -10,10 +10,15 @@ import {
   ExpiredTokenError,
   InvalidTokenError,
 } from 'node-cognito-core-sdk';
+import { Reflector } from '@nestjs/core';
+import { TokenType } from '../decorators';
 
 @Injectable()
 export class ValidateTokenGuard implements CanActivate {
-  constructor(protected cognitoAuthService: CognitoAuthService) {}
+  constructor(
+    private reflector: Reflector,
+    protected cognitoAuthService: CognitoAuthService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -29,7 +34,22 @@ export class ValidateTokenGuard implements CanActivate {
         throw new HttpException('Token is missing', HttpStatus.UNAUTHORIZED);
       }
 
-      request['comercAuth'] = await this.cognitoAuthService.tokenInfo(token);
+      const comercUser = await this.cognitoAuthService.tokenInfo(token);
+
+      request['comercAuth'] = comercUser;
+
+      const tokenType =
+        this.reflector.get(TokenType, context.getHandler()) ?? 'ALL';
+
+      if (
+        tokenType.toUpperCase() !== 'ALL' &&
+        comercUser.tokenUse !== tokenType.toUpperCase()
+      ) {
+        throw new HttpException(
+          `Token type is invalid. the token type must be ${tokenType}`,
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
 
       return true;
     } catch (error) {

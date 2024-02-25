@@ -1,6 +1,6 @@
 {
   "name": "cognito-auth-nestjs",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,12 +17,18 @@
   "author": "Kaique Cavalcanti",
   "license": "ISC",
   "dependencies": {
+    "@nestjs/cache-manager": "^2.2.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.0",
+    "@nestjs/core": "^10.3.3",
     "axios": "^1.6.7",
-    "node-cognito-core-sdk": "^0.0.1"
+    "cache-manager": "^5.4.0",
+    "cache-manager-redis-yet": "^4.1.2",
+    "node-cognito-core-sdk": "^1.0.0",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@types/cache-manager": "^4.0.6",
     "@types/node": "^18.15.10",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
