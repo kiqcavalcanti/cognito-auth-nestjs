@@ -1,7 +1,6 @@
 import { Provider } from '@nestjs/common';
-import { CognitoAuthService } from 'node-cognito-core-sdk';
+import { CognitoAuthService, RedisCacheService } from 'node-cognito-core-sdk';
 import { ConfigService } from '@nestjs/config';
-import { RedisCacheService } from '../services/redis-cache.service';
 
 export const CognitoAuthProvider: Provider = {
   provide: CognitoAuthService,
