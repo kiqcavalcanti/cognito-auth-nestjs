@@ -1,10 +1,14 @@
 import { Provider } from '@nestjs/common';
 import { CognitoAuthService } from 'node-cognito-core-sdk';
 import { ConfigService } from '@nestjs/config';
+import { RedisCacheService } from '../services/redis-cache.service';
 
 export const CognitoAuthProvider: Provider = {
   provide: CognitoAuthService,
-  useFactory: (configService: ConfigService) => {
+  useFactory: (
+    configService: ConfigService,
+    redisCacheService: RedisCacheService,
+  ) => {
     return new CognitoAuthService(
       configService.get('AWS_COGNITO_USER_POOL_ID'),
       configService.get('AWS_DEFAULT_REGION'),
@@ -15,7 +19,8 @@ export const CognitoAuthProvider: Provider = {
       configService.get('AWS_COGNITO_HOST'),
       configService.get('AWS_COGNITO_IDP_URL'),
       configService.get('COMERC_AUTH_API_URL'),
+      redisCacheService,
     );
   },
-  inject: [ConfigService],
+  inject: [ConfigService, RedisCacheService],
 };
