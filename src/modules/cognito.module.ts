@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CognitoModuleProviders } from '../providers';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisCacheConfig } from '../config';
+import { RedisCacheService } from '../services/redis-cache.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { redisCacheConfig } from '../config';
         redisCacheConfig(configService),
     }),
   ],
-  providers: [...CognitoModuleProviders],
+  providers: [...CognitoModuleProviders, RedisCacheService],
   exports: [...CognitoModuleProviders],
 })
 export class CognitoModule {}
